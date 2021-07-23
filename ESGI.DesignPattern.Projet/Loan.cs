@@ -5,92 +5,34 @@ namespace ESGI.DesignPattern.Projet
 {
     public class Loan
     {
-        double _commitment = 1.0;
-        private DateTime? _expiry;
-        private DateTime? _maturity;
-        private double _outstanding;
+        protected double _commitment;
         IList<Payment> _payments = new List<Payment>();
-        private DateTime? _today = DateTime.Now;
-        private DateTime _start;
-        private long MILLIS_PER_DAY = 86400000;
-        private long DAYS_PER_YEAR = 365;
-        private double _riskRating;
-        private double _unusedPercentage;
+        private DateTime _start = DateTime.Now;
+        private const long MILLIS_PER_DAY = 86400000;
+        private const long DAYS_PER_YEAR = 365;
 
-        public Loan(double commitment, double notSureWhatThisIs, DateTime start, DateTime? expiry, DateTime? maturity, int riskRating)
+        public Loan(
+            double commitment,
+            DateTime start
+            )
         {
-            this._expiry = expiry;
             this._commitment = commitment;
-            this._today = null;
             this._start = start;
-            this._maturity = maturity;
-            this._riskRating = riskRating;
-            this._unusedPercentage = 1.0;
         }
 
-        public static Loan NewTermLoan(double commitment, DateTime start, DateTime maturity, int riskRating)
-        {
-            return new Loan(commitment, commitment, start, null,
-                            maturity, riskRating);
-        }
-
-        public static Loan NewRevolver(double commitment, DateTime start, DateTime expiry, int riskRating)
-        {
-            return new Loan(commitment, 0, start, expiry,
-                            null, riskRating);
-        }
-
-        public static Loan NewAdvisedLine(double commitment, DateTime start, DateTime expiry, int riskRating)
-        {
-            if (riskRating > 3) return null;
-            Loan advisedLine = new Loan(commitment, 0, start, expiry,
-                            null, riskRating);
-            advisedLine.SetUnusedPercentage(0.1);
-            return advisedLine;
-        }
-
-        public void Payment(double amount, DateTime paymentDate)
+        public void Payment(
+            double amount,
+            DateTime paymentDate)
         {
             _payments.Add(new Payment(amount, paymentDate));
         }
 
-        public double Capital()
+        protected double WeightedAverageDuration()
         {
-            if (_expiry == null && _maturity != null)
-                return _commitment * Duration() * RiskFactor();
-            if (_expiry != null && _maturity == null)
-            {
-                if (GetUnusedPercentage() != 1.0)
-                {
-                    return _commitment * GetUnusedPercentage() * Duration() * RiskFactor();
-                }
-                else
-                {
-                    return (OutstandingRiskAmount() * Duration() * RiskFactor())
-                        + (UnusedRiskAmount() * Duration() * UnusedRiskFactor());
-                }
-            }
-            return 0.0;
-        }
-
-        public double Duration()
-        {
-            if (_expiry == null && _maturity != null)
-            {
-                return WeightedAverageDuration();
-            }
-            else if (_expiry != null && _maturity == null)
-            {
-                return YearsTo(_expiry);
-            }
-            return 0.0;
-        }
-
-        private double WeightedAverageDuration()
-        {
-            double duration = 0.0;
             double weightedAverage = 0.0;
             double sumOfPayments = 0.0;
+
+            if (_commitment == 0.0) return 0.0;
 
             foreach (var payment in _payments)
             {
@@ -98,48 +40,106 @@ namespace ESGI.DesignPattern.Projet
                 weightedAverage += YearsTo(payment.Date) * payment.Amount;
             }
 
-            if (_commitment != 0.0)
-            {
-                duration = weightedAverage / sumOfPayments;
-            }
-
-            return duration;
+            return weightedAverage / sumOfPayments;
         }
 
-        private double YearsTo(DateTime? endDate)
+        protected double YearsTo(DateTime? endDate)
         {
-            DateTime? beginDate = (_today == null ? _start : _today);
-            return (double)((endDate?.Ticks - beginDate?.Ticks) / MILLIS_PER_DAY / DAYS_PER_YEAR);
+            return (double) ((endDate?.Ticks - _start.Ticks) / MILLIS_PER_DAY / DAYS_PER_YEAR);
+        }
+    }
+
+    public interface ILoan
+    {
+        double Duration();
+        double Capital();
+        void Payment(double amount, DateTime paymentDate);
+    }
+
+    public class NewTermLoan : Loan, ILoan
+    {
+        private const double RISK_FACTOR = 0.03;
+        private DateTime? _maturity;
+        public NewTermLoan(double commitment, DateTime start, DateTime end) : base(commitment, start)
+        {
+            this._maturity = end;
+        }
+        
+        public double Duration()
+        {
+            return _maturity != null ? WeightedAverageDuration() : 0.0;
         }
 
-        private double RiskFactor()
+        public double Capital()
         {
-            return ESGI.DesignPattern.Projet.RiskFactor.GetFactors().ForRating(_riskRating);
+            if (_maturity != null)
+                return _commitment * Duration() * RISK_FACTOR;
+            return 0.0;
         }
 
-        private double GetUnusedPercentage()
+        public void Payment(double amount,
+            DateTime paymentDate)
         {
-            return _unusedPercentage;
+            base.Payment(amount, paymentDate);
+        }
+    }
+
+    public class NewRevolver : Loan, ILoan
+    {
+        private DateTime? _expiry;
+        private const double RISK_FACTOR = 0.01;
+        
+        public NewRevolver(double commitment, DateTime start, DateTime end) : base(commitment, start)
+        {
+            this._expiry = end;
+        }
+        
+        public double Duration()
+        {
+            return _expiry != null ? YearsTo(_expiry) : 0.0;
         }
 
-        public void SetUnusedPercentage(double unusedPercentage)
+        public double Capital()
         {
-            _unusedPercentage = unusedPercentage;
+            if (_expiry != null)
+                return _commitment * Duration() * RISK_FACTOR;
+            return 0.0;
+        }
+        
+        public void Payment(double amount,
+            DateTime paymentDate)
+        {
+            base.Payment(amount, paymentDate);
+        }
+    }
+
+    public class NewAdvisedLine : Loan, ILoan
+    {
+        private DateTime? _expiry;
+        private const double RISK_FACTOR = 0.03;
+        private const double PERCENTAGE = 0.1;
+        public NewAdvisedLine(double commitment, DateTime start, DateTime end) : base(commitment, start)
+        {
+            this._expiry = end;
+        }
+        
+        public double Duration()
+        {
+            return _expiry != null ? YearsTo(_expiry) : 0.0;
         }
 
-        private double UnusedRiskAmount()
+        public double Capital()
         {
-            return (_commitment - _outstanding);
-        }
+            if (_expiry != null)
+                return _commitment * PERCENTAGE * Duration() * RISK_FACTOR;
 
-        private double UnusedRiskFactor()
-        {
-            return UnusedRiskFactors.GetFactors().ForRating(_riskRating);
+            return 0.0;
         }
-
-        private double OutstandingRiskAmount()
+        
+        public void Payment(double amount,
+            DateTime paymentDate)
         {
-            return _outstanding;
+            base.Payment(amount, paymentDate);
         }
     }
 }
