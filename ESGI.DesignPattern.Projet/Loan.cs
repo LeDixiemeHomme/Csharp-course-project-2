@@ -8,8 +8,6 @@ namespace ESGI.DesignPattern.Projet
         protected double _commitment;
         IList<Payment> _payments = new List<Payment>();
         private DateTime _start = DateTime.Now;
-        private const long MILLIS_PER_DAY = 86400000;
-        private const long DAYS_PER_YEAR = 365;
 
         public Loan(
             double commitment,
@@ -45,22 +43,22 @@ namespace ESGI.DesignPattern.Projet
 
         protected double YearsTo(DateTime? endDate)
         {
-            return (double) ((endDate?.Ticks - _start.Ticks) / MILLIS_PER_DAY / DAYS_PER_YEAR);
+            return (double) ((endDate?.Ticks - _start.Ticks) / Constant.MILLIS_PER_DAY / Constant.DAYS_PER_YEAR);
         }
     }
 
-    public interface ILoan
+    public interface INewLoan
     {
         double Duration();
         double Capital();
         void Payment(double amount, DateTime paymentDate);
     }
 
-    public class NewTermLoan : Loan, ILoan
+    public class NewTermNewLoan : Loan, INewLoan
     {
         private const double RISK_FACTOR = 0.03;
         private DateTime? _maturity;
-        public NewTermLoan(double commitment, DateTime start, DateTime end) : base(commitment, start)
+        public NewTermNewLoan(double commitment, DateTime start, DateTime end) : base(commitment, start)
         {
             this._maturity = end;
         }
@@ -76,15 +74,9 @@ namespace ESGI.DesignPattern.Projet
                 return _commitment * Duration() * RISK_FACTOR;
             return 0.0;
         }
-
-        public void Payment(double amount,
-            DateTime paymentDate)
-        {
-            base.Payment(amount, paymentDate);
-        }
     }
 
-    public class NewRevolver : Loan, ILoan
+    public class NewRevolver : Loan, INewLoan
     {
         private DateTime? _expiry;
         private const double RISK_FACTOR = 0.01;
@@ -105,15 +97,9 @@ namespace ESGI.DesignPattern.Projet
                 return _commitment * Duration() * RISK_FACTOR;
             return 0.0;
         }
-        
-        public void Payment(double amount,
-            DateTime paymentDate)
-        {
-            base.Payment(amount, paymentDate);
-        }
     }
 
-    public class NewAdvisedLine : Loan, ILoan
+    public class NewAdvisedLine : Loan, INewLoan
     {
         private DateTime? _expiry;
         private const double RISK_FACTOR = 0.03;
@@ -134,12 +120,6 @@ namespace ESGI.DesignPattern.Projet
                 return _commitment * PERCENTAGE * Duration() * RISK_FACTOR;
 
             return 0.0;
-        }
-        
-        public void Payment(double amount,
-            DateTime paymentDate)
-        {
-            base.Payment(amount, paymentDate);
         }
     }
 }

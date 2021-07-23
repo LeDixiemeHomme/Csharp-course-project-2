@@ -10,12 +10,12 @@ namespace ESGI.DesignPattern.Projet
     }
     public class LoanFactory
     {
-        public static ILoan create(LoanType loanType, double commitment, DateTime start, DateTime end, int riskRating)
+        public static INewLoan create(LoanType loanType, double commitment, DateTime start, DateTime end, int riskRating)
         {
             switch (loanType)
             {
                 case LoanType.NewTermLoan:
-                    return new NewTermLoan(commitment, start, end);
+                    return new NewTermNewLoan(commitment, start, end);
                 case LoanType.NewRevolver:
                     return new NewRevolver(commitment, start, end);
                 case LoanType.NewAdvisedLine:

@@ -26,13 +26,13 @@ namespace ESGI.DesignPattern.Projet.Tests
             DateTime start = November(20, 2003);
             DateTime maturity = November(20, 2006);
 
-            ILoan termLoan = LoanFactory.create(LoanType.NewTermLoan,LOAN_AMOUNT, start, maturity, HIGH_RISK_TAKING);
-            termLoan.Payment(1000.00, November(20, 2004));
-            termLoan.Payment(1000.00, November(20, 2005));
-            termLoan.Payment(1000.00, November(20, 2006));
+            INewLoan termNewLoan = LoanFactory.create(LoanType.NewTermLoan,LOAN_AMOUNT, start, maturity, HIGH_RISK_TAKING);
+            termNewLoan.Payment(1000.00, November(20, 2004));
+            termNewLoan.Payment(1000.00, November(20, 2005));
+            termNewLoan.Payment(1000.00, November(20, 2006));
 
-            Assert.Equal(20027, termLoan.Duration(), (int)TWO_DIGIT_PRECISION);
-            Assert.Equal(6008100, termLoan.Capital(), (int)TWO_DIGIT_PRECISION);
+            Assert.Equal(20027, termNewLoan.Duration(), (int)TWO_DIGIT_PRECISION);
+            Assert.Equal(6008100, termNewLoan.Capital(), (int)TWO_DIGIT_PRECISION);
         }
 
         [Fact()]
@@ -41,14 +41,14 @@ namespace ESGI.DesignPattern.Projet.Tests
             DateTime start = November(20, 2003);
             DateTime expiry = November(20, 2007);
 
-            ILoan revolverLoan = LoanFactory.create(LoanType.NewRevolver,LOAN_AMOUNT, start, expiry, HIGH_RISK_TAKING);
+            INewLoan revolverNewLoan = LoanFactory.create(LoanType.NewRevolver,LOAN_AMOUNT, start, expiry, HIGH_RISK_TAKING);
 
-            revolverLoan.Payment(1000.00, November(20, 2004));
-            revolverLoan.Payment(1000.00, November(20, 2005));
-            revolverLoan.Payment(1000.00, November(20, 2006));
+            revolverNewLoan.Payment(1000.00, November(20, 2004));
+            revolverNewLoan.Payment(1000.00, November(20, 2005));
+            revolverNewLoan.Payment(1000.00, November(20, 2006));
 
-            Assert.Equal(40027, revolverLoan.Duration(), (int)TWO_DIGIT_PRECISION);
-            Assert.Equal(4002700, revolverLoan.Capital(), (int)TWO_DIGIT_PRECISION);
+            Assert.Equal(40027, revolverNewLoan.Duration(), (int)TWO_DIGIT_PRECISION);
+            Assert.Equal(4002700, revolverNewLoan.Capital(), (int)TWO_DIGIT_PRECISION);
         }
 
         [Fact()]
@@ -58,14 +58,14 @@ namespace ESGI.DesignPattern.Projet.Tests
             DateTime maturity = November(20, 2006);
             DateTime expiry = November(20, 2007);
 
-            ILoan advisedLineLoan = LoanFactory.create(LoanType.NewAdvisedLine,LOAN_AMOUNT, start, expiry, LOW_RISK_TAKING);
+            INewLoan advisedLineNewLoan = LoanFactory.create(LoanType.NewAdvisedLine,LOAN_AMOUNT, start, expiry, LOW_RISK_TAKING);
 
-            advisedLineLoan.Payment(1000.00, November(20, 2004));
-            advisedLineLoan.Payment(1000.00, November(20, 2005));
-            advisedLineLoan.Payment(1000.00, November(20, 2006));
+            advisedLineNewLoan.Payment(1000.00, November(20, 2004));
+            advisedLineNewLoan.Payment(1000.00, November(20, 2005));
+            advisedLineNewLoan.Payment(1000.00, November(20, 2006));
 
-            Assert.Equal(40027, advisedLineLoan.Duration(), (int)TWO_DIGIT_PRECISION);
-            Assert.Equal(1200810, advisedLineLoan.Capital(), (int)TWO_DIGIT_PRECISION);
+            Assert.Equal(40027, advisedLineNewLoan.Duration(), (int)TWO_DIGIT_PRECISION);
+            Assert.Equal(1200810, advisedLineNewLoan.Capital(), (int)TWO_DIGIT_PRECISION);
         }
 
         private static DateTime November(int dayOfMonth, int year)
