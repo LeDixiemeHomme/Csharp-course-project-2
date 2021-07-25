@@ -56,7 +56,7 @@ namespace ESGI.DesignPattern.Projet
 
     public class NewTermNewLoan : Loan, INewLoan
     {
-        private const double RISK_FACTOR = 0.03;
+        private const double RiskFactor = Constant.RISK_FACTOR_TERM_NEW_LOAN;
         private DateTime? _maturity;
         public NewTermNewLoan(double commitment, DateTime start, DateTime end) : base(commitment, start)
         {
@@ -71,7 +71,7 @@ namespace ESGI.DesignPattern.Projet
         public double Capital()
         {
             if (_maturity != null)
-                return _commitment * Duration() * RISK_FACTOR;
+                return _commitment * Duration() * RiskFactor;
             return 0.0;
         }
     }
@@ -79,7 +79,7 @@ namespace ESGI.DesignPattern.Projet
     public class NewRevolver : Loan, INewLoan
     {
         private DateTime? _expiry;
-        private const double RISK_FACTOR = 0.01;
+        private const double RiskFactor = Constant.RISK_FACTOR_REVOLVER;
         
         public NewRevolver(double commitment, DateTime start, DateTime end) : base(commitment, start)
         {
@@ -94,7 +94,7 @@ namespace ESGI.DesignPattern.Projet
         public double Capital()
         {
             if (_expiry != null)
-                return _commitment * Duration() * RISK_FACTOR;
+                return _commitment * Duration() * RiskFactor;
             return 0.0;
         }
     }
@@ -102,7 +102,7 @@ namespace ESGI.DesignPattern.Projet
     public class NewAdvisedLine : Loan, INewLoan
     {
         private DateTime? _expiry;
-        private const double RISK_FACTOR = 0.03;
+        private const double RiskFactor = Constant.RISK_FACTOR_ADVISED_LINE;
         private const double PERCENTAGE = 0.1;
         public NewAdvisedLine(double commitment, DateTime start, DateTime end) : base(commitment, start)
         {
@@ -117,7 +117,7 @@ namespace ESGI.DesignPattern.Projet
         public double Capital()
         {
             if (_expiry != null)
-                return _commitment * PERCENTAGE * Duration() * RISK_FACTOR;
+                return _commitment * PERCENTAGE * Duration() * RiskFactor;
 
             return 0.0;
         }

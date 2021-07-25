@@ -6,6 +6,9 @@ namespace ESGI.DesignPattern.Projet
     {
         public static long MILLIS_PER_DAY = 86400000;
         public static long DAYS_PER_YEAR = DaysPerYear();
+        public const double RISK_FACTOR_REVOLVER = 0.01;
+        public const double RISK_FACTOR_ADVISED_LINE = 0.03;
+        public const double RISK_FACTOR_TERM_NEW_LOAN = 0.03;
 
         private static long DaysPerYear()
         {
