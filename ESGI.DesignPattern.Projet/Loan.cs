@@ -43,7 +43,11 @@ namespace ESGI.DesignPattern.Projet
 
         protected double YearsTo(DateTime? endDate)
         {
-            return (double) ((endDate?.Ticks - _start.Ticks) / Constant.MILLIS_PER_DAY / Constant.DAYS_PER_YEAR);
+            if (endDate != null)
+            {
+                return (double) ((endDate.Value.Ticks - _start.Ticks) / Constant.MILLIS_PER_DAY / Constant.DAYS_PER_YEAR);
+            }
+            return 0;
         }
     }
 
@@ -103,7 +107,7 @@ namespace ESGI.DesignPattern.Projet
     {
         private DateTime? _expiry;
         private const double RiskFactor = Constant.RISK_FACTOR_ADVISED_LINE;
-        private const double PERCENTAGE = 0.1;
+        private const double Percentage = 0.1;
         public NewAdvisedLine(double commitment, DateTime start, DateTime end) : base(commitment, start)
         {
             this._expiry = end;
@@ -117,7 +121,7 @@ namespace ESGI.DesignPattern.Projet
         public double Capital()
         {
             if (_expiry != null)
-                return _commitment * PERCENTAGE * Duration() * RiskFactor;
+                return _commitment * Percentage * Duration() * RiskFactor;
 
             return 0.0;
         }

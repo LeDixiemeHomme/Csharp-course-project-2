@@ -10,7 +10,7 @@ namespace ESGI.DesignPattern.Projet
     }
     public class LoanFactory
     {
-        public static INewLoan create(LoanType loanType, double commitment, DateTime start, DateTime end, int riskRating)
+        public static INewLoan Create(LoanType loanType, double commitment, DateTime start, DateTime end, int riskRating)
         {
             switch (loanType)
             {

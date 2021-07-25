@@ -26,7 +26,7 @@ namespace ESGI.DesignPattern.Projet.Tests
             DateTime start = November(20, 2003);
             DateTime maturity = November(20, 2006);
 
-            INewLoan termNewLoan = LoanFactory.create(LoanType.NewTermLoan,LOAN_AMOUNT, start, maturity, HIGH_RISK_TAKING);
+            INewLoan termNewLoan = LoanFactory.Create(LoanType.NewTermLoan,LOAN_AMOUNT, start, maturity, HIGH_RISK_TAKING);
             termNewLoan.Payment(1000.00, November(20, 2004));
             termNewLoan.Payment(1000.00, November(20, 2005));
             termNewLoan.Payment(1000.00, November(20, 2006));
@@ -41,7 +41,7 @@ namespace ESGI.DesignPattern.Projet.Tests
             DateTime start = November(20, 2003);
             DateTime expiry = November(20, 2007);
 
-            INewLoan revolverNewLoan = LoanFactory.create(LoanType.NewRevolver,LOAN_AMOUNT, start, expiry, HIGH_RISK_TAKING);
+            INewLoan revolverNewLoan = LoanFactory.Create(LoanType.NewRevolver,LOAN_AMOUNT, start, expiry, HIGH_RISK_TAKING);
 
             revolverNewLoan.Payment(1000.00, November(20, 2004));
             revolverNewLoan.Payment(1000.00, November(20, 2005));
@@ -58,7 +58,7 @@ namespace ESGI.DesignPattern.Projet.Tests
             DateTime maturity = November(20, 2006);
             DateTime expiry = November(20, 2007);
 
-            INewLoan advisedLineNewLoan = LoanFactory.create(LoanType.NewAdvisedLine,LOAN_AMOUNT, start, expiry, LOW_RISK_TAKING);
+            INewLoan advisedLineNewLoan = LoanFactory.Create(LoanType.NewAdvisedLine,LOAN_AMOUNT, start, expiry, LOW_RISK_TAKING);
 
             advisedLineNewLoan.Payment(1000.00, November(20, 2004));
             advisedLineNewLoan.Payment(1000.00, November(20, 2005));
